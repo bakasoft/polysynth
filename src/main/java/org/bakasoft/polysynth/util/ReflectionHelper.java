@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class ReflectionHelper {
   public static Supplier<Object> makeObjectCreator(Class<?> type) {
-    for (Constructor<?> ctr : type.getConstructors()) {
+    for (Constructor<?> ctr : type.getDeclaredConstructors()) {
       if (ctr.getParameterCount() == 0) {
         return () -> {
           try {
@@ -37,7 +37,7 @@ public class ReflectionHelper {
   }
 
   public static Supplier<? extends List<?>> makeListConstructor(Class<?> type) {
-    for (Constructor<?> ctr : type.getConstructors()) {
+    for (Constructor<?> ctr : type.getDeclaredConstructors()) {
       if (ctr.getParameterCount() == 0) {
         return () -> {
           try {
