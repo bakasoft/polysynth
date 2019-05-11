@@ -20,12 +20,12 @@ public class ReflectionHelper_makeObjectCreator extends TestCase {
 
     Object instance = supplier.get();
 
-    itMustBeInstanceOf(instance, CustomType.class);
+    expect(instance).toBeInstanceOf(CustomType.class);
   }
 
   {
     Supplier<Object> supplier = ReflectionHelper.makeObjectCreator(PrivateType.class);
 
-    itMustFailWith(ObjectCreationException.class, supplier::get);
+    fail(ObjectCreationException.class, supplier::get);
   }
 }

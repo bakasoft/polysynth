@@ -4,12 +4,15 @@ import org.bakasoft.polysynth.errors.ConversionException;
 import org.bakasoft.polysynth.graph.GraphContext;
 import org.bakasoft.polysynth.graph.GraphNumber;
 import org.bakasoft.polysynth.graph.GraphValue;
-import org.bakasoft.polysynth.schemas.ScalarSchema;
+import org.bakasoft.polysynth.schemas.ArraySchema;
+import org.bakasoft.polysynth.schemas.ConversionCache;
+import org.bakasoft.polysynth.schemas.ObjectSchema;
+import org.bakasoft.polysynth.schemas.Schema;
 
-public class ScalarInteger implements ScalarSchema {
+public class ScalarInteger extends Schema {
 
   @Override
-  public Integer convert(Object value) {
+  public Integer convert(Object value, ConversionCache cache) {
     if (value == null) {
       return null; // java.lang.Integer can be null
     }
@@ -27,7 +30,7 @@ public class ScalarInteger implements ScalarSchema {
 
   @Override
   public GraphValue toGraph(Object instance, GraphContext context) {
-    Integer i = convert(instance);
+    Integer i = convert(instance, null);
 
     if (i == null) {
       return null;
@@ -39,5 +42,20 @@ public class ScalarInteger implements ScalarSchema {
   @Override
   public Class<?> getType() {
     return Integer.class;
+  }
+
+  @Override
+  public GraphValue toGraph(Object instance) {
+    return null;
+  }
+
+  @Override
+  public ObjectSchema toObject() {
+    return null;
+  }
+
+  @Override
+  public ArraySchema toArray() {
+    return null;
   }
 }

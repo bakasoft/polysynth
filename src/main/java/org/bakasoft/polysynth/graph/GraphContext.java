@@ -10,6 +10,10 @@ public class GraphContext {
 
   private final HashMap<GraphRef, GraphObject> references;
 
+  public GraphContext() {
+    this(new Polysynth());
+  }
+
   public GraphContext(Polysynth polysynth) {
     this.polysynth = polysynth;
     this.references = new HashMap<>();

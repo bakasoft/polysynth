@@ -9,18 +9,18 @@ import org.bakasoft.polysynth.graph.GraphNumber;
 public class Scalar_int_class extends TestCase {{
   Scalar_int schema = new Scalar_int();
 
-  itMustBeEqual(schema.getType(), int.class);
-  itMustBeEqual(schema.toString(), "Scalar<int>");
-  itMustBeInstanceOf(schema.toGraph(10, new Polysynth()), GraphNumber.class);
+  expect(schema.getType()).toEqual(int.class);
+  expect(schema.toString()).toEqual("Scalar<int>");
+  expect(schema.toGraph(10)).toBeInstanceOf(GraphNumber.class);
 
-  itMustBeEqual(schema.convert(10), 10);
-  itMustBeEqual(schema.convert(10L), 10);
-  itMustBeEqual(schema.convert("10"), 10);
-  itMustFailWith(ConversionException.class, () -> schema.convert(null));
-  itMustFailWith(ConversionException.class, () -> schema.convert(true));
-  itMustFailWith(ConversionException.class, () -> schema.convert(false));
-  itMustFailWith(ConversionException.class, () -> schema.convert("10A"));
-  itMustFailWith(ConversionException.class, () -> schema.convert("1,1"));
-  itMustFailWith(ConversionException.class, () -> schema.convert(""));
-  itMustFailWith(ConversionException.class, () -> schema.convert(new Object()));
+  expect(schema.convert(10)).toEqual(10);
+  expect(schema.convert(10L)).toEqual(10);
+  expect(schema.convert("10")).toEqual(10);
+  fail(ConversionException.class, () -> schema.convert(null));
+  fail(ConversionException.class, () -> schema.convert(true));
+  fail(ConversionException.class, () -> schema.convert(false));
+  fail(ConversionException.class, () -> schema.convert("10A"));
+  fail(ConversionException.class, () -> schema.convert("1,1"));
+  fail(ConversionException.class, () -> schema.convert(""));
+  fail(ConversionException.class, () -> schema.convert(new Object()));
 }}

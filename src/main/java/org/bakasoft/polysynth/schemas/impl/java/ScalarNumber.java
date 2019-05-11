@@ -4,14 +4,17 @@ import org.bakasoft.polysynth.errors.ConversionException;
 import org.bakasoft.polysynth.graph.GraphContext;
 import org.bakasoft.polysynth.graph.GraphNumber;
 import org.bakasoft.polysynth.graph.GraphValue;
-import org.bakasoft.polysynth.schemas.ScalarSchema;
+import org.bakasoft.polysynth.schemas.ArraySchema;
+import org.bakasoft.polysynth.schemas.ConversionCache;
+import org.bakasoft.polysynth.schemas.ObjectSchema;
+import org.bakasoft.polysynth.schemas.Schema;
 
 import java.math.BigDecimal;
 
-public class ScalarNumber implements ScalarSchema {
+public class ScalarNumber extends Schema {
 
   @Override
-  public Number convert(Object value) {
+  public Number convert(Object value, ConversionCache cache) {
     if (value == null) {
       return null;
     }
@@ -32,11 +35,26 @@ public class ScalarNumber implements ScalarSchema {
 
   @Override
   public GraphValue toGraph(Object instance, GraphContext context) {
-    return new GraphNumber(convert(instance));
+    return new GraphNumber(convert(instance, null));
   }
 
   @Override
   public Class<?> getType() {
     return Number.class;
+  }
+
+  @Override
+  public GraphValue toGraph(Object instance) {
+    return null;
+  }
+
+  @Override
+  public ObjectSchema toObject() {
+    return null;
+  }
+
+  @Override
+  public ArraySchema toArray() {
+    return null;
   }
 }

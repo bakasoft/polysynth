@@ -5,38 +5,25 @@ import org.bakasoft.polysynth.errors.UnexpectedTypeException;
 import org.bakasoft.polysynth.graph.GraphContext;
 import org.bakasoft.polysynth.graph.GraphValue;
 
-public interface Schema {
+import java.util.HashMap;
+import java.util.Map;
 
-  GraphValue toGraph(Object instance, GraphContext context);
+abstract public class Schema {
 
-  Class<?> getType();
-
-  default GraphValue toGraph(Object instance, Polysynth polysynth) {
-    return toGraph(instance, new GraphContext(polysynth));
+  public final Object convert(Object value) {
+    return convert(value, null);
   }
 
-  default ObjectSchema toObject() {
-    if (!(this instanceof ObjectSchema)) {
-      throw new UnexpectedTypeException(this, ObjectSchema.class);
-    }
+  abstract protected Object convert(Object value, ConversionCache cache);
 
-    return (ObjectSchema)this;
-  }
+  abstract public GraphValue toGraph(Object instance, GraphContext context);
 
-  default ArraySchema toArray() {
-    if (!(this instanceof ArraySchema)) {
-      throw new UnexpectedTypeException(this, ArraySchema.class);
-    }
+  abstract public Class<?> getType();
 
-    return (ArraySchema)this;
-  }
+  abstract public GraphValue toGraph(Object instance);
 
-  default ScalarSchema toScalar() {
-    if (!(this instanceof ScalarSchema)) {
-      throw new UnexpectedTypeException(this, ScalarSchema.class);
-    }
+  abstract public ObjectSchema toObject();
 
-    return (ScalarSchema)this;
-  }
+  abstract public ArraySchema toArray();
 
 }

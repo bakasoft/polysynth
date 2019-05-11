@@ -8,21 +8,21 @@ import org.bakasoft.polysynth.graph.GraphBoolean;
 public class Scalar_boolean_class extends TestCase {{
   Scalar_boolean schema = new Scalar_boolean();
 
-  itMustBeEqual(schema.getType(), boolean.class);
-  itMustBeEqual(schema.toString(), "Scalar<boolean>");
-  itMustBeInstanceOf(schema.toGraph(true, new Polysynth()), GraphBoolean.class);
+  expect(schema.getType()).toEqual(boolean.class);
+  expect(schema.toString()).toEqual("Scalar<boolean>");
+  expect(schema.toGraph(true)).toBeInstanceOf(GraphBoolean.class);
 
-  itMustBeEqual(schema.convert(true), true);
-  itMustBeEqual(schema.convert(false), false);
-  itMustBeEqual(schema.convert("true"), true);
-  itMustBeEqual(schema.convert("false"), false);
-  itMustBeEqual(schema.convert(Boolean.TRUE), true);
-  itMustBeEqual(schema.convert(Boolean.FALSE), false);
-  itMustFailWith(ConversionException.class, () -> schema.convert(null));
-  itMustFailWith(ConversionException.class, () -> schema.convert(0));
-  itMustFailWith(ConversionException.class, () -> schema.convert(1));
-  itMustFailWith(ConversionException.class, () -> schema.convert("yes"));
-  itMustFailWith(ConversionException.class, () -> schema.convert("no"));
-  itMustFailWith(ConversionException.class, () -> schema.convert(""));
-  itMustFailWith(ConversionException.class, () -> schema.convert(new Object()));
+  expect(schema.convert(true)).toBeTrue();
+  expect(schema.convert(false)).toBeFalse();
+  expect(schema.convert("true")).toBeTrue();
+  expect(schema.convert("false")).toBeFalse();
+  expect(schema.convert(Boolean.TRUE)).toBeTrue();
+  expect(schema.convert(Boolean.FALSE)).toBeFalse();
+  fail(ConversionException.class, () -> schema.convert(null));
+  fail(ConversionException.class, () -> schema.convert(0));
+  fail(ConversionException.class, () -> schema.convert(1));
+  fail(ConversionException.class, () -> schema.convert("yes"));
+  fail(ConversionException.class, () -> schema.convert("no"));
+  fail(ConversionException.class, () -> schema.convert(""));
+  fail(ConversionException.class, () -> schema.convert(new Object()));
 }}

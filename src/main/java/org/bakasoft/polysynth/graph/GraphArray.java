@@ -27,8 +27,7 @@ public class GraphArray implements GraphValue {
   }
 
   synchronized private void load() {
-    List<Object> sourceItems = schema.list(instance);
-    Schema globalSchema = schema.getItemSchema();
+    List<?> sourceItems = schema.list(instance);
 
     values_ = new GraphValue[sourceItems.size()];
 
@@ -46,13 +45,7 @@ public class GraphArray implements GraphValue {
           graphItem = ref;
         }
         else {
-          Schema itemSchema;
-
-          if (globalSchema == null) {
-            itemSchema = context.getPolysynth().getSchema(sourceItem.getClass());
-          } else {
-            itemSchema = globalSchema;
-          }
+          Schema itemSchema = context.getPolysynth().getSchema(sourceItem.getClass());
 
           graphItem = itemSchema.toGraph(sourceItem, context);
         }

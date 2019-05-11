@@ -4,12 +4,15 @@ import org.bakasoft.polysynth.errors.ConversionException;
 import org.bakasoft.polysynth.graph.GraphBoolean;
 import org.bakasoft.polysynth.graph.GraphContext;
 import org.bakasoft.polysynth.graph.GraphValue;
-import org.bakasoft.polysynth.schemas.ScalarSchema;
+import org.bakasoft.polysynth.schemas.ArraySchema;
+import org.bakasoft.polysynth.schemas.ConversionCache;
+import org.bakasoft.polysynth.schemas.ObjectSchema;
+import org.bakasoft.polysynth.schemas.Schema;
 
-public class Scalar_boolean implements ScalarSchema {
+public class Scalar_boolean extends Schema {
 
   @Override
-  public Boolean convert(Object value) {
+  public Boolean convert(Object value, ConversionCache cache) {
     if (value == null) {
       throw new ConversionException(null, boolean.class);
     }
@@ -29,12 +32,27 @@ public class Scalar_boolean implements ScalarSchema {
 
   @Override
   public GraphValue toGraph(Object instance, GraphContext context) {
-    return new GraphBoolean(convert(instance));
+    return new GraphBoolean(convert(instance, null));
   }
 
   @Override
   public Class<?> getType() {
     return boolean.class;
+  }
+
+  @Override
+  public GraphValue toGraph(Object instance) {
+    return new GraphBoolean(convert(instance, null));
+  }
+
+  @Override
+  public ObjectSchema toObject() {
+    return null;
+  }
+
+  @Override
+  public ArraySchema toArray() {
+    return null;
   }
 
   @Override

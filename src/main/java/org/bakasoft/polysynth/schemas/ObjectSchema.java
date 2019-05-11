@@ -1,27 +1,192 @@
 package org.bakasoft.polysynth.schemas;
 
-import org.bakasoft.polysynth.wrappers.ObjectWrapper;
+import org.bakasoft.beat.BeatProperty;
+import org.bakasoft.beat.BeatType;
+import org.bakasoft.beat.BeatConstructor;
+import org.bakasoft.polysynth.Polysynth;
+import org.bakasoft.polysynth.errors.*;
+import org.bakasoft.polysynth.graph.GraphContext;
+import org.bakasoft.polysynth.graph.GraphObject;
+import org.bakasoft.polysynth.graph.GraphValue;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-public interface ObjectSchema extends Schema {
+public class ObjectSchema extends Schema {
 
-  void set(Object instance, String key, Object value);
+  private final Polysynth polysynth;
 
-  Object get(Object instance, String key);
+  private final BeatType beatType;
 
-  Set<String> getKeys();
+  private final Map<String, Schema> schemas;
+  private final BeatConstructor beatConstructor;
 
-  Schema getSchema(String key);
+  public ObjectSchema(Type type) {
+    this(new Polysynth(), type);
+  }
 
-  boolean isReadOnly(String key);
+  public ObjectSchema(Polysynth polysynth, Type type) {
+    this(polysynth, new BeatType(type));
+  }
 
-  boolean isWriteOnly(String key);
+  public ObjectSchema(Polysynth polysynth, BeatType beatType) {
+    if (polysynth == null) { throw new MissingArgumentException("polysynth"); }
+    if (beatType == null) { throw new MissingArgumentException("beatType"); }
 
-  Object createWith(Map<String, ?> initialValues);
+    this.polysynth = polysynth;
+    this.beatType = beatType;
+    this.beatConstructor = beatType.getConstructor();
+    this.schemas = new ConcurrentHashMap<>();
+  }
 
-  default Class<?> getType(String key) {
+  @Override
+  public Object convert(Object value, ConversionCache cache) {
+    if (beatType.isCompatible(value)) {
+      return value;
+    }
+    else if (value instanceof Map) {
+      return createWith((Map<?,?>)value, cache);
+    }
+    else {
+      throw new ConversionException(value, beatType.getTypeClass());
+    }
+  }
+
+  @Override
+  public GraphValue toGraph(Object instance, GraphContext context) {
+    return new GraphObject(context, this, instance);
+  }
+
+  @Override
+  public Class<?> getType() {
+    return beatType.getTypeClass();
+  }
+
+  @Override
+  public GraphValue toGraph(Object instance) {
+    return toGraph(instance, new GraphContext(polysynth));
+  }
+
+  public Set<String> getKeys() {
+    return beatType.getPropertyNames();
+  }
+
+  public Schema getSchema(String key) {
+    return schemas.computeIfAbsent(key, k -> {
+      BeatProperty property = beatType.getProperty(k);
+
+      if (property == null) {
+        return null;
+      }
+
+      return polysynth.getSchema(property.getRawType());
+    });
+  }
+
+  public boolean isReadable(String key) {
+    BeatProperty p = beatType.getProperty(key);
+
+    if (p == null) {
+      throw new UnknownPropertyException(beatType.getTypeClass(), key);
+    }
+
+    return p.isReadable();
+  }
+
+  public boolean isWritable(String key) {
+    BeatProperty p = beatType.getProperty(key);
+
+    if (p == null) {
+      throw new UnknownPropertyException(beatType.getTypeClass(), key);
+    }
+
+    return p.isWritable();
+  }
+
+  public Object createWith(Map<?, ?> rawValues) {
+    return createWith(rawValues, null);
+  }
+
+  private Object createWith(Map<?,?> rawValues, ConversionCache cache) {
+    if (rawValues == null) {
+      return createEmpty();
+    }
+
+    HashMap<String, Object> validValues = toValidNamedArguments(beatType, rawValues, cache);
+
+    return beatConstructor.createWithNamedArguments(validValues);
+  }
+
+  private HashMap<String, Object> toValidNamedArguments(BeatType type, Map<?,?> raw, ConversionCache cache) {
+    class PropertyTemplate {
+      public String key;
+      public Schema schema;
+      public Object value;
+    }
+
+    ArrayList<PropertyTemplate> templates = new ArrayList<>();
+
+    for (Map.Entry<?, ?> entry : raw.entrySet()) {
+      if (entry.getKey() instanceof String) {
+        String key = (String)entry.getKey();
+        Schema schema = getSchema(key);
+
+        if (schema == null) {
+          throw new UnknownPropertyException(type.getTypeClass(), key);
+        }
+
+        PropertyTemplate template = new PropertyTemplate();
+        template.key = key;
+        template.schema = schema;
+        template.value = entry.getValue();
+        templates.add(template);
+      }
+      else {
+        throw new UnexpectedTypeException(entry.getKey(), String.class);
+      }
+    }
+
+    HashMap<String, Object> result = new HashMap<>();
+
+    ConversionCache actualCache;
+
+    if (cache == null) {
+      actualCache = new ConversionCache();
+    }
+    else {
+      actualCache = cache;
+    }
+
+    for (PropertyTemplate template : templates) {
+      String key = template.key;
+      Schema schema = template.schema;
+      Object rawValue = template.value;
+      Object validValue = actualCache.getOrConvert(schema, rawValue);
+
+      result.put(key, validValue);
+    }
+
+    return result;
+  }
+
+  public void set(Object instance, String key, Object value) {
+    beatType.set(instance, key, value);
+  }
+
+  public Object get(Object instance, String key) {
+    return beatType.get(instance, key);
+  }
+
+  @Override
+  public String toString() {
+    return "Object<" + beatType.getName() + ">";
+  }
+
+  public Class<?> getType(String key) {
     Schema schema = getSchema(key);
 
     if (schema == null) {
@@ -31,20 +196,16 @@ public interface ObjectSchema extends Schema {
     return schema.getType();
   }
 
-  default Object createEmpty() {
-    return createWith(null);
+  public Object createEmpty() {
+    return beatConstructor.createDefault();
   }
 
-  default ObjectWrapper wrapNew() {
-    return wrap(createEmpty());
+  public ObjectSchema toObject() {
+    return this;
   }
 
-  default ObjectWrapper wrapNew(Map<String, ?> initialValues) {
-    return wrap(createWith(initialValues));
-  }
-
-  default ObjectWrapper wrap(Object instance) {
-    return new ObjectWrapper(instance, this);
+  public ArraySchema toArray() {
+    throw new UnexpectedTypeException(this, ArraySchema.class);
   }
 
 }

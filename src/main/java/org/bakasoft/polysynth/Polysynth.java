@@ -1,21 +1,23 @@
 package org.bakasoft.polysynth;
 
+import org.bakasoft.beat.BeatType;
 import org.bakasoft.polysynth.errors.MissingArgumentException;
 import org.bakasoft.polysynth.errors.SchemaOverrideException;
-import org.bakasoft.polysynth.schemas.impl.DefaultSchemas;
+import org.bakasoft.polysynth.graph.GraphContext;
+import org.bakasoft.polysynth.schemas.ArraySchema;
+import org.bakasoft.polysynth.schemas.EnumSchema;
+import org.bakasoft.polysynth.schemas.ObjectSchema;
 import org.bakasoft.polysynth.schemas.Schema;
-import org.bakasoft.polysynth.schemas.impl.ArrayClassSchema;
-import org.bakasoft.polysynth.schemas.impl.ArrayListSchema;
-import org.bakasoft.polysynth.schemas.impl.ObjectClassSchema;
-import org.bakasoft.polysynth.schemas.impl.ScalarEnumSchema;
+import org.bakasoft.polysynth.schemas.impl.DefaultSchemas;
 import org.bakasoft.polysynth.schemas.impl.java.*;
 
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Polysynth {
 
-  private final ConcurrentHashMap<Class<?>, Schema> schemas;
+  private final Map<Type, Schema> schemas;
 
   public Polysynth() {
     this(true);
@@ -35,47 +37,51 @@ public class Polysynth {
     }
 
     return getSchema(instance.getClass())
-        .toGraph(instance, this);
+        .toGraph(instance, new GraphContext(this));
   }
 
-  public void setSchema(Class<?> type, Schema schema) {
+  public void setSchema(Type type, Schema schema) {
     if (type == null) { throw new MissingArgumentException("type"); }
     if (schema == null) { throw new MissingArgumentException("schema"); }
 
-    if (schemas.containsKey(type)) {
-      throw new SchemaOverrideException(type);
-    }
+    synchronized(this) {
+      if (schemas.containsKey(type)) {
+        throw new SchemaOverrideException(type);
+      }
 
-    schemas.put(type, schema);
+      schemas.put(type, schema);
+    }
   }
 
-  public Schema getSchema(Class<?> type) {
+  public Schema getSchema(Type type) {
     if (type == null) { throw new MissingArgumentException("type"); }
 
     // TODO what happens if the type is abstract or an interface?
     return schemas.computeIfAbsent(type, t -> {
-      if (t.isArray()) {
-        return new ArrayClassSchema(this, t);
-      }
-      else if (t.isEnum()) {
-        return new ScalarEnumSchema(t);
-      }
-      else if (t.isPrimitive()) {
-        if (t == int.class) { return new Scalar_int(); }
-        else if (t == boolean.class) { return new Scalar_boolean(); }
-        // TODO add missing schemas
-        else if (t == char.class) { throw new UnsupportedOperationException(); }
-        else if (t == long.class) { throw new UnsupportedOperationException(); }
-        else if (t == double.class) { throw new UnsupportedOperationException(); }
-        else if (t == float.class) { throw new UnsupportedOperationException(); }
-        else if (t == byte.class) { throw new UnsupportedOperationException(); }
-        else if (t == short.class) { throw new UnsupportedOperationException(); }
-      }
-      else if (List.class.isAssignableFrom(t)) {
-        return new ArrayListSchema(this, t);
+      BeatType beatType = new BeatType(t);
+
+      if (beatType.isCollection() || beatType.isArray()) {
+        return new ArraySchema(this, beatType);
       }
 
-      return new ObjectClassSchema(this, t);
+      Class<?> typeClass = beatType.getTypeClass();
+
+      if (typeClass.isEnum()) {
+        return new EnumSchema(typeClass);
+      }
+      else if (typeClass.isPrimitive()) {
+        if (typeClass == int.class) { return new Scalar_int(); }
+        else if (typeClass == boolean.class) { return new Scalar_boolean(); }
+        // TODO add missing schemas
+        else if (typeClass == char.class) { throw new UnsupportedOperationException(); }
+        else if (typeClass == long.class) { throw new UnsupportedOperationException(); }
+        else if (typeClass == double.class) { throw new UnsupportedOperationException(); }
+        else if (typeClass == float.class) { throw new UnsupportedOperationException(); }
+        else if (typeClass == byte.class) { throw new UnsupportedOperationException(); }
+        else if (typeClass == short.class) { throw new UnsupportedOperationException(); }
+      }
+
+      return new ObjectSchema(this, beatType);
     });
   }
 
