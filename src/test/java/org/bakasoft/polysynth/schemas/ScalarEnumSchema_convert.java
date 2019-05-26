@@ -1,8 +1,7 @@
 package org.bakasoft.polysynth.schemas;
 
-import org.bakasoft.polysynth.TestCase;
+import org.bakasoft.framboyan.test.TestCase;
 import org.bakasoft.polysynth.errors.ConversionException;
-import org.bakasoft.polysynth.schemas.EnumSchema;
 
 import java.lang.annotation.ElementType;
 

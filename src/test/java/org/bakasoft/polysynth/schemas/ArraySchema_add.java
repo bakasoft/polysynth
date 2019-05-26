@@ -1,11 +1,8 @@
 package org.bakasoft.polysynth.schemas;
 
-import org.bakasoft.beat.Beat;
+import org.bakasoft.framboyan.test.TestCase;
 import org.bakasoft.beat.exceptions.BeatException;
 import org.bakasoft.polysynth.Polysynth;
-import org.bakasoft.polysynth.TestCase;
-import org.bakasoft.polysynth.errors.MissingArgumentException;
-import org.bakasoft.polysynth.schemas.ArraySchema;
 
 import java.util.ArrayList;
 import java.util.List;

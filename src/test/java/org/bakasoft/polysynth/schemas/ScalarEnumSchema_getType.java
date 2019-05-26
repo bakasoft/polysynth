@@ -1,8 +1,6 @@
 package org.bakasoft.polysynth.schemas;
 
-import org.bakasoft.polysynth.TestCase;
-import org.bakasoft.polysynth.schemas.EnumSchema;
-
+import org.bakasoft.framboyan.test.TestCase;
 import java.net.StandardProtocolFamily;
 
 public class ScalarEnumSchema_getType extends TestCase {{

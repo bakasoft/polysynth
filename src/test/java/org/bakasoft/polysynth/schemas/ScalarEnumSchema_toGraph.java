@@ -1,10 +1,8 @@
 package org.bakasoft.polysynth.schemas;
 
-import org.bakasoft.polysynth.Polysynth;
-import org.bakasoft.polysynth.TestCase;
+import org.bakasoft.framboyan.test.TestCase;
 import org.bakasoft.polysynth.graph.GraphString;
 import org.bakasoft.polysynth.graph.GraphValue;
-import org.bakasoft.polysynth.schemas.EnumSchema;
 
 import java.math.RoundingMode;
 

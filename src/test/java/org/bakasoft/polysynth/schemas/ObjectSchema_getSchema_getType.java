@@ -1,10 +1,7 @@
 package org.bakasoft.polysynth.schemas;
 
+import org.bakasoft.framboyan.test.TestCase;
 import org.bakasoft.polysynth.Polysynth;
-import org.bakasoft.polysynth.TestCase;
-import org.bakasoft.polysynth.schemas.ArraySchema;
-import org.bakasoft.polysynth.schemas.ObjectSchema;
-import org.bakasoft.polysynth.schemas.Schema;
 import org.bakasoft.polysynth.testData.Artist;
 
 public class ObjectSchema_getSchema_getType extends TestCase {{

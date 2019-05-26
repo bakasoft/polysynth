@@ -1,9 +1,8 @@
 package org.bakasoft.polysynth.schemas;
 
-import org.bakasoft.polysynth.TestCase;
+import org.bakasoft.framboyan.test.TestCase;
 import org.bakasoft.polysynth.errors.MissingArgumentException;
 import org.bakasoft.polysynth.errors.UnexpectedTypeException;
-import org.bakasoft.polysynth.schemas.EnumSchema;
 
 import java.lang.management.MemoryType;
 

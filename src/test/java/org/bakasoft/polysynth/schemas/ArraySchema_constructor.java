@@ -1,17 +1,11 @@
 package org.bakasoft.polysynth.schemas;
 
+import org.bakasoft.framboyan.test.TestCase;
 import org.bakasoft.beat.BeatType;
 import org.bakasoft.polysynth.Polysynth;
-import org.bakasoft.polysynth.TestCase;
 import org.bakasoft.polysynth.errors.MissingArgumentException;
-import org.bakasoft.polysynth.errors.UnexpectedTypeException;
-import org.bakasoft.polysynth.schemas.ArraySchema;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Stack;
-import java.util.Vector;
 
 public class ArraySchema_constructor extends TestCase {{
 

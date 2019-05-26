@@ -1,9 +1,6 @@
 package org.bakasoft.polysynth.schemas;
 
-import org.bakasoft.polysynth.Polysynth;
-import org.bakasoft.polysynth.TestCase;
-import org.bakasoft.polysynth.schemas.ArraySchema;
-
+import org.bakasoft.framboyan.test.TestCase;
 import java.util.List;
 
 public class ArraySchema_createEmpty extends TestCase {{

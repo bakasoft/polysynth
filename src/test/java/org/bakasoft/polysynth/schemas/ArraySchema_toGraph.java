@@ -1,10 +1,9 @@
 package org.bakasoft.polysynth.schemas;
 
+import org.bakasoft.framboyan.test.TestCase;
 import org.bakasoft.polysynth.Polysynth;
-import org.bakasoft.polysynth.TestCase;
 import org.bakasoft.polysynth.graph.GraphArray;
 import org.bakasoft.polysynth.graph.GraphValue;
-import org.bakasoft.polysynth.schemas.ArraySchema;
 
 import java.util.ArrayList;
 import java.util.List;

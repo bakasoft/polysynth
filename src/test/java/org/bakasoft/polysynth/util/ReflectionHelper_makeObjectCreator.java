@@ -1,6 +1,6 @@
 package org.bakasoft.polysynth.util;
 
-import org.bakasoft.polysynth.TestCase;
+import org.bakasoft.framboyan.test.TestCase;
 import org.bakasoft.polysynth.errors.ObjectCreationException;
 
 import java.util.function.Supplier;

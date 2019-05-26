@@ -15,7 +15,6 @@ repositories {
 }
 
 dependencies {
-//    compile 'com.github.bakasoft:beat:master'
-    compile files('/Users/sergio.pedraza/bakasoft/beat/build/libs/beat-0.1.0.jar')
-    testCompile files('/Users/sergio.pedraza/bakasoft/framboyan/build/libs/framboyan-2.0.0.jar')
+    compile 'com.github.bakasoft:beat:0.1.0'
+    testCompile 'com.github.bakasoft:framboyan:2.1.0'
 }

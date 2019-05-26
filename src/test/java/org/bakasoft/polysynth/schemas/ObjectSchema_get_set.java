@@ -1,10 +1,8 @@
 package org.bakasoft.polysynth.schemas;
 
+import org.bakasoft.framboyan.test.TestCase;
 import org.bakasoft.beat.exceptions.BeatException;
 import org.bakasoft.polysynth.Polysynth;
-import org.bakasoft.polysynth.TestCase;
-import org.bakasoft.polysynth.errors.UnknownPropertyException;
-import org.bakasoft.polysynth.schemas.ObjectSchema;
 import org.bakasoft.polysynth.testData.Artist;
 
 import java.util.HashMap;

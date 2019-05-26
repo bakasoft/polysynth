@@ -1,9 +1,8 @@
 package org.bakasoft.polysynth.schemas;
 
+import org.bakasoft.framboyan.test.TestCase;
 import org.bakasoft.polysynth.Polysynth;
-import org.bakasoft.polysynth.TestCase;
 import org.bakasoft.polysynth.errors.UnexpectedTypeException;
-import org.bakasoft.polysynth.schemas.ObjectSchema;
 
 public class ObjectSchema_toArray_toObject_toScalar extends TestCase {{
   Polysynth polysynth = new Polysynth();

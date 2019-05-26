@@ -1,7 +1,6 @@
 package org.bakasoft.polysynth.schemas.impl.java;
 
-import org.bakasoft.polysynth.Polysynth;
-import org.bakasoft.polysynth.TestCase;
+import org.bakasoft.framboyan.test.TestCase;
 import org.bakasoft.polysynth.errors.ConversionException;
 import org.bakasoft.polysynth.graph.GraphBoolean;
 
