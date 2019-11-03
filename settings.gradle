@@ -1,2 +1,10 @@
 rootProject.name = 'polysynth'
 
+sourceControl {
+    gitRepository("https://github.com/bakasoft/framboyan.git") {
+        producesModule("bakasoft:framboyan")
+    }
+    gitRepository("https://github.com/bakasoft/beat.git") {
+        producesModule("bakasoft:beat")
+    }
+}

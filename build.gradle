@@ -2,19 +2,13 @@ plugins {
     id 'java'
 }
 
-group 'org.bakasoft'
-version '1.0-SNAPSHOT'
+group 'bakasoft'
+version '0.1.1'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-repositories {
-    mavenCentral()
-
-    maven { url 'https://jitpack.io' }
-}
-
 dependencies {
-    compile 'com.github.bakasoft:beat:0.1.0'
-    testCompile 'com.github.bakasoft:framboyan:2.1.0'
+    compile 'bakasoft:beat:0.1.1'
+    testCompile 'bakasoft:framboyan:2.1.1'
 }

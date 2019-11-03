@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ObjectSchema extends Schema {
 
@@ -40,7 +39,7 @@ public class ObjectSchema extends Schema {
     this.polysynth = polysynth;
     this.beatType = beatType;
     this.beatConstructor = beatType.getConstructor();
-    this.schemas = new ConcurrentHashMap<>();
+    this.schemas = new HashMap<>();
   }
 
   @Override
@@ -76,15 +75,25 @@ public class ObjectSchema extends Schema {
   }
 
   public Schema getSchema(String key) {
-    return schemas.computeIfAbsent(key, k -> {
-      BeatProperty property = beatType.getProperty(k);
-
-      if (property == null) {
-        return null;
+    synchronized (schemas) {
+      if (schemas.containsKey(key)) {
+        return schemas.get(key);
       }
 
-      return polysynth.getSchema(property.getRawType());
-    });
+      BeatProperty property = beatType.getProperty(key);
+      Schema schema;
+
+      if (property == null) {
+        schema = null;
+      }
+      else {
+        schema = polysynth.getSchema(property.getRawType());
+      }
+
+      schemas.put(key, schema);
+
+      return schema;
+    }
   }
 
   public boolean isReadable(String key) {
